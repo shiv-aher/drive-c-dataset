@@ -1,0 +1,39 @@
+version: v1.0
+name: default_mixture_policy
+
+p_clean: 0.25
+
+k_dist:
+  values: [0, 1, 2, 3]
+  probs:  [0.00, 0.45, 0.40, 0.15]
+
+type_weights:
+  haze_fog: 1.2
+  rain: 1.2
+  snow: 0.7
+  low_light: 1.1
+  motion_blur: 1.0
+  defocus_blur: 1.0
+  glare_flare: 1.2
+  vignetting: 0.8
+  sensor_noise: 1.0
+  exposure_shift: 1.0
+  compression: 0.9
+  lens_occlusion: 0.9
+
+severity:
+  beta_alpha: 2.0
+  beta_beta: 5.0
+  hard_mix_p: 0.10
+  hard_alpha: 5.0
+  hard_beta: 2.0
+  min_sev: 0.02
+  max_sev: 0.98
+
+couplings:
+  low_light_implies_noise_p: 0.70
+  rain_implies_fog_p: 0.35
+  exposure_implies_glare_p: 0.25
+
+constraints:
+  max_optical_in_sample: 2

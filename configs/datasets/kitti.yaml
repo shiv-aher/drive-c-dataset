@@ -1,0 +1,22 @@
+dataset: kitti
+image_root: data/kitti/raw/training/image_2
+splits: data/splits/kitti_trainval.json
+
+taxonomy: configs/taxonomy/camera_issues.yaml
+
+simulation:
+  enabled_issues:
+    - haze_fog
+    - rain
+    - snow
+    - low_light
+    - motion_blur
+    - defocus_blur
+    - glare_flare
+    - vignetting
+    - sensor_noise
+    - exposure_shift
+    - compression
+    - lens_occlusion
+
+  max_issues_per_image: 2
