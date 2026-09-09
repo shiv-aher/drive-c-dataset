@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "If you use DRIVE-C, please cite the dataset and descriptor paper."
 title: "DRIVE-C: A Controlled Corruption Dataset for Autonomous Driving"
 type: software
-version: 1.0.0
+version: 1.0.1
 date-released: 2026-09-09
 authors:
   - family-names: Aher

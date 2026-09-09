@@ -1,8 +1,8 @@
 {
-  "release": "DRIVE-C code v1.0.0",
+  "release": "DRIVE-C code v1.0.1",
   "status": "validated-for-release",
-  "code_tag": "v1.0.0",
-  "git_commit": "RESOLVE_FROM_ANNOTATED_TAG_v1.0.0",
+  "code_tag": "v1.0.1",
+  "git_commit": "RESOLVE_FROM_ANNOTATED_TAG_v1.0.1",
   "dataset_version_doi": "10.5281/zenodo.19656444",
   "dataset_concept_doi": "10.5281/zenodo.19656443",
   "software_doi": null,
@@ -23,5 +23,5 @@
     "numpy": "1.26.4"
   },
   "integrity_manifest": "SHA256SUMS.txt",
-  "notes": "The annotated v1.0.0 tag identifies the exact commit without creating a self-referential tracked manifest. The software DOI is filled after the archive exists."
+  "notes": "The annotated v1.0.1 tag identifies the exact commit without creating a self-referential tracked manifest. The software DOI is filled after the archive exists."
 }

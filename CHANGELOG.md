@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 — 2026-09-09
+
+- Documented explicit input and output roots for corruption regeneration.
+- Added separate smoke-test and full-dataset generation commands to prevent
+  skipped outputs from producing incomplete regenerated metadata.
+
 ## 1.0.0 — 2026-09-09
 
 - Added the complete PerceptionHealthNet implementation, training program,

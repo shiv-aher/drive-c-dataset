@@ -73,20 +73,57 @@ All commands below are run from the repository root.
 - [Regeneration boundary and audit](docs/regeneration.md)
 - [Release validation](docs/release_validation.md)
 
-## Prepare released clean inputs for corruption regeneration
+## Regenerate corruptions from the released clean clips
+
+Keep the downloaded release separate from generated outputs. The following
+variables make every input and output path explicit:
 
 ```bash
+export DRIVE_C_RELEASE_ROOT=/absolute/path/to/drive-c-core-v1
+export DRIVE_C_CLEAN_FRAMES_ROOT="$PWD/work/clean_frames"
+export DRIVE_C_DEPTH_ROOT="$PWD/work/depth"
+
 python scripts/extract_released_clean_frames.py \
-  --dataset-root "$DRIVE_C_DATASET_ROOT" \
-  --output-root work/clean_frames
+  --dataset-root "$DRIVE_C_RELEASE_ROOT" \
+  --output-root "$DRIVE_C_CLEAN_FRAMES_ROOT"
 
 python scripts/generate_drivec_core_depth.py \
-  --input-root work/clean_frames \
-  --output-root work/depth
+  --input-root "$DRIVE_C_CLEAN_FRAMES_ROOT" \
+  --output-root "$DRIVE_C_DEPTH_ROOT"
 ```
 
 The depth model identifier is frozen by the depth-generation command. The
 original pre-anonymization recordings are not required for this public stage.
+
+For a one-scenario, one-corruption smoke test, use a new output directory and
+copy the released scenario metadata required by the generator:
+
+```bash
+export DRIVE_C_DATASET_ROOT="$PWD/work/regenerated-smoke"
+mkdir -p "$DRIVE_C_DATASET_ROOT"
+cp "$DRIVE_C_RELEASE_ROOT/scenario_metadata.csv" "$DRIVE_C_DATASET_ROOT/"
+
+python scripts/unified_generate_drivec.py \
+  --scenarios S01 \
+  --corruptions motion_blur \
+  --severity-names s3
+```
+
+For full-dataset regeneration, use a different empty output directory so that
+the generated metadata cannot omit outputs skipped from an earlier smoke test:
+
+```bash
+export DRIVE_C_DATASET_ROOT="$PWD/work/regenerated-full"
+mkdir -p "$DRIVE_C_DATASET_ROOT"
+cp "$DRIVE_C_RELEASE_ROOT/scenario_metadata.csv" "$DRIVE_C_DATASET_ROOT/"
+
+python scripts/unified_generate_drivec.py
+```
+
+The generator reads clean frames from `DRIVE_C_CLEAN_FRAMES_ROOT`, depth maps
+from `DRIVE_C_DEPTH_ROOT`, and writes clips and `samples_metadata.csv` beneath
+`DRIVE_C_DATASET_ROOT`. Start each regeneration run with an empty output
+directory.
 
 ## Recompute reference GSHI
 
