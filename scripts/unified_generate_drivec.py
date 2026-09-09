@@ -5,6 +5,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import shutil
 import sys
 from dataclasses import dataclass
@@ -19,8 +20,8 @@ import numpy as np
 # ============================================================
 
 THIS_FILE = Path(__file__).resolve()
-PROJECT_ROOT = THIS_FILE.parents[2]          # .../drive-c
-DATASET_ROOT = PROJECT_ROOT / "DRIVE-C-Core"
+PROJECT_ROOT = THIS_FILE.parents[1]
+DATASET_ROOT = Path(os.environ.get("DRIVE_C_DATASET_ROOT", PROJECT_ROOT / "dataset"))
 
 # Make repo imports work regardless of where script is launched from
 sys.path.insert(0, str(PROJECT_ROOT))
@@ -30,8 +31,8 @@ sys.path.insert(0, str(PROJECT_ROOT / "scripts"))
 # DATA PATHS
 # ============================================================
 
-CLEAN_FRAMES_ROOT = PROJECT_ROOT / "data/processed/drivec_core_frames"
-DEPTH_ROOT = PROJECT_ROOT / "data/processed/drivec_core_depth"
+CLEAN_FRAMES_ROOT = Path(os.environ.get("DRIVE_C_CLEAN_FRAMES_ROOT", PROJECT_ROOT / "data/processed/drivec_core_frames"))
+DEPTH_ROOT = Path(os.environ.get("DRIVE_C_DEPTH_ROOT", PROJECT_ROOT / "data/processed/drivec_core_depth"))
 
 CLEAN_CLIPS_DIR = DATASET_ROOT / "clean_clips"
 CORRUPTED_CLIPS_DIR = DATASET_ROOT / "corrupted"

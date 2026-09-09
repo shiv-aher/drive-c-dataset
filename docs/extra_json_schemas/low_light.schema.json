@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C low_light extra_json",
+  "type": "object",
+  "properties": {
+    "amp_r": {
+      "type": "number",
+      "minimum": 2.0,
+      "maximum": 2.0
+    },
+    "amp_s": {
+      "type": "number",
+      "minimum": 3.0,
+      "maximum": 3.0
+    },
+    "desat": {
+      "type": "number",
+      "minimum": 0.02,
+      "maximum": 0.1875
+    },
+    "gamma": {
+      "type": "number",
+      "minimum": 1.3141125347675753,
+      "maximum": 2.973550336513312
+    },
+    "per_channel": {
+      "type": "boolean"
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "sigma_r": {
+      "type": "number",
+      "minimum": 0.0035946140675304533,
+      "maximum": 0.04250556821953421
+    },
+    "sigma_s": {
+      "type": "number",
+      "minimum": 0.012326718439110823,
+      "maximum": 0.24300211674564226
+    }
+  },
+  "required": [
+    "amp_r",
+    "amp_s",
+    "desat",
+    "gamma",
+    "per_channel",
+    "severity",
+    "sigma_r",
+    "sigma_s"
+  ],
+  "additionalProperties": false
+}

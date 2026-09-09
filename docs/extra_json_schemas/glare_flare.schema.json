@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C glare_flare extra_json",
+  "type": "object",
+  "properties": {
+    "bloom_strength": {
+      "type": "number",
+      "minimum": 0.09289762768884263,
+      "maximum": 0.4502258601178476
+    },
+    "bright_thresh": {
+      "type": "number",
+      "minimum": 0.709581761017484,
+      "maximum": 0.8161533391103452
+    },
+    "device": {
+      "type": "string"
+    },
+    "flare_mean": {
+      "type": "number",
+      "minimum": 0.0006251699524000287,
+      "maximum": 0.3566235303878784
+    },
+    "ghost_count": {
+      "type": "integer",
+      "minimum": 0.0,
+      "maximum": 4.0
+    },
+    "ghosts_enabled": {
+      "type": "boolean"
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "severity_scaled": {
+      "type": "number",
+      "minimum": 0.02262741699796952,
+      "maximum": 0.649519052838329
+    },
+    "streak_angle_deg": {
+      "type": "number",
+      "minimum": -17.65709365545449,
+      "maximum": 17.14163474499638
+    },
+    "streak_enabled": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "bloom_strength",
+    "bright_thresh",
+    "device",
+    "flare_mean",
+    "ghost_count",
+    "ghosts_enabled",
+    "severity",
+    "severity_scaled",
+    "streak_angle_deg",
+    "streak_enabled"
+  ],
+  "additionalProperties": false
+}

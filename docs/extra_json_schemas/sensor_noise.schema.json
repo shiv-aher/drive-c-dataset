@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C sensor_noise extra_json",
+  "type": "object",
+  "properties": {
+    "per_channel": {
+      "type": "boolean"
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "sigma_r": {
+      "type": "number",
+      "minimum": 0.0026830606379827033,
+      "maximum": 0.017071318763375566
+    },
+    "sigma_s": {
+      "type": "number",
+      "minimum": 0.007254459243086816,
+      "maximum": 0.0677569363905651
+    }
+  },
+  "required": [
+    "per_channel",
+    "severity",
+    "sigma_r",
+    "sigma_s"
+  ],
+  "additionalProperties": false
+}

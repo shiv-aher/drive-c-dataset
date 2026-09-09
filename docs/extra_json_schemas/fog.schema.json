@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C fog extra_json",
+  "type": "object",
+  "properties": {
+    "A": {
+      "type": "array"
+    },
+    "blur_kernel": {
+      "type": "integer",
+      "minimum": 5.0,
+      "maximum": 5.0
+    },
+    "contrast_scale": {
+      "type": "number",
+      "minimum": 0.95,
+      "maximum": 0.95
+    },
+    "darken_factor": {
+      "type": "number",
+      "minimum": 0.88,
+      "maximum": 0.88
+    },
+    "depth_max": {
+      "type": "number",
+      "minimum": 1.0,
+      "maximum": 1.0
+    },
+    "depth_min": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 0.0
+    },
+    "depth_shift": {
+      "type": "number",
+      "minimum": 0.3,
+      "maximum": 0.3
+    },
+    "distance_exp": {
+      "type": "number",
+      "minimum": 1.5,
+      "maximum": 1.5
+    },
+    "gamma": {
+      "type": "number",
+      "minimum": 0.7,
+      "maximum": 0.7
+    },
+    "k": {
+      "type": "number",
+      "minimum": 0.896,
+      "maximum": 1.7
+    },
+    "mask_mean": {
+      "type": "number",
+      "minimum": 0.22899200022220612,
+      "maximum": 0.45682597160339355
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "t_min": {
+      "type": "number",
+      "minimum": 0.25,
+      "maximum": 0.25
+    }
+  },
+  "required": [
+    "A",
+    "blur_kernel",
+    "contrast_scale",
+    "darken_factor",
+    "depth_max",
+    "depth_min",
+    "depth_shift",
+    "distance_exp",
+    "gamma",
+    "k",
+    "mask_mean",
+    "severity",
+    "t_min"
+  ],
+  "additionalProperties": false
+}

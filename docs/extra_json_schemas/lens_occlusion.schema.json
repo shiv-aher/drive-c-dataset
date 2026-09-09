@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C lens_occlusion extra_json",
+  "type": "object",
+  "properties": {
+    "blobs": {
+      "type": "array"
+    },
+    "coverage_reached": {
+      "type": "number",
+      "minimum": 0.08892469618055555,
+      "maximum": 0.49976671006944445
+    },
+    "n_blobs": {
+      "type": "integer",
+      "minimum": 3.0,
+      "maximum": 10.0
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "target_coverage": {
+      "type": "number",
+      "minimum": 0.08683796394240399,
+      "maximum": 0.41197882156696997
+    }
+  },
+  "required": [
+    "blobs",
+    "coverage_reached",
+    "n_blobs",
+    "severity",
+    "target_coverage"
+  ],
+  "additionalProperties": false
+}

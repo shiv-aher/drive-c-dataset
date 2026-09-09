@@ -1,0 +1,32 @@
+{
+  "title": "DRIVE-C: Reproducible Generation and Baseline Code",
+  "description": "Code, frozen configurations, and PerceptionHealthNet inference artifacts for the DRIVE-C controlled corruption dataset.",
+  "upload_type": "software",
+  "license": "MIT",
+  "creators": [
+    {
+      "name": "Aher, Shiva",
+      "orcid": "0009-0008-3081-5266",
+      "affiliation": "Georgia Institute of Technology"
+    }
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.19656444",
+      "relation": "isSupplementTo",
+      "scheme": "doi"
+    },
+    {
+      "identifier": "https://github.com/shiv-aher/drive-c-dataset",
+      "relation": "isIdenticalTo",
+      "scheme": "url"
+    }
+  ],
+  "keywords": [
+    "autonomous driving",
+    "camera corruption",
+    "perception robustness",
+    "sensor health",
+    "dataset generation"
+  ]
+}

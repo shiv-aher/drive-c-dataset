@@ -1,0 +1,11 @@
+scenario_id,source_video_id,clip_start_frame,clip_end_frame,num_frames,fps,orig_resolution,output_resolution,weather,time_of_day,capture_date,camera_model,scene_type,traffic_level,notes,output_clip_path
+S01,video_018,615,742,128,30,3840x2160,1280x720,cloudy,day,2026-04-05,DJI_Osmo_Action_4,urban,moderate,Urban driving with moderate traffic,clean_clips/S01_video_018_clean.mp4
+S02,video_017,265,392,128,30,3840x2160,1280x720,cloudy,day,2026-04-05,DJI_Osmo_Action_4,freeway,moderate,Freeway driving with moderate traffic,clean_clips/S02_video_017_clean.mp4
+S03,video_013,585,712,128,30,3840x2160,1280x720,sunny,day,2026-04-05,DJI_Osmo_Action_4,urban,moderate,suburban driving with moderate traffic and freeway driving moderate traffic,clean_clips/S03_video_013_clean.mp4
+S04,video_016,458,585,128,30,3840x2160,1280x720,cloudy,day,2026-04-05,DJI_Osmo_Action_4,rural,moderate,rural driving with moderate traffic,clean_clips/S04_video_016_clean.mp4
+S05,video_009,140,267,128,30,3840x2160,1280x720,sunny,day,2026-04-05,DJI_Osmo_Action_4,parking_lot,moderate,Parking lot driving with moderate vehicles,clean_clips/S05_video_009_clean.mp4
+S06,video_003,240,367,128,30,3840x2160,1280x720,cloudy,night,2026-04-01,DJI_Osmo_Action_4,urban,moderate,suburban driving with moderate traffic and parking lot,clean_clips/S06_video_003_clean.mp4
+S07,video_006,439,566,128,30,3840x2160,1280x720,cloudy,night,2026-04-01,DJI_Osmo_Action_4,urban,moderate,suburban driving with moderate traffic and freeway night driving moderate traffic,clean_clips/S07_video_006_clean.mp4
+S08,video_007,75,202,128,30,3840x2160,1280x720,cloudy,night,2026-04-01,DJI_Osmo_Action_4,urban,none,suburban driving with no traffic,clean_clips/S08_video_007_clean.mp4
+S09,video_014,192,319,128,30,3840x2160,1280x720,sunny,day,2026-04-05,DJI_Osmo_Action_4,urban,low,suburban driving with less traffic,clean_clips/S09_video_014_clean.mp4
+S10,video_020,378,505,128,30,3840x2160,1280x720,cloudy,day,2026-04-05,DJI_Osmo_Action_4,rural,moderate,rural driving with moderate traffic,clean_clips/S10_video_020_clean.mp4

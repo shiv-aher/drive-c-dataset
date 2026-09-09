@@ -2,14 +2,15 @@
 from __future__ import annotations
 
 import argparse
+import os
 import csv
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 
 THIS_FILE = Path(__file__).resolve()
-PROJECT_ROOT = THIS_FILE.parents[2]
-DATASET_ROOT = PROJECT_ROOT / "DRIVE-C-Core"
+PROJECT_ROOT = THIS_FILE.parents[1]
+DATASET_ROOT = Path(os.environ.get("DRIVE_C_DATASET_ROOT", PROJECT_ROOT / "dataset"))
 
 DEFAULT_GT_CSV = DATASET_ROOT / "samples_metadata_with_gshi.csv"
 DEFAULT_PRED_CSV = DATASET_ROOT / "samples_metadata_with_gshi_pred.csv"

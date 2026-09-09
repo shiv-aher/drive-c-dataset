@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+.venv/
+work/
+dataset/clean_clips/
+dataset/corrupted/
+dataset/_tmp_build/
+cover_letter.pdf

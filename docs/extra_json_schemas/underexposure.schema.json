@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C underexposure extra_json",
+  "type": "object",
+  "properties": {
+    "delta_ev": {
+      "type": "number",
+      "minimum": -1.5,
+      "maximum": -0.16
+    },
+    "scale": {
+      "type": "number",
+      "minimum": 0.3535533905932738,
+      "maximum": 0.8950250709279725
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    }
+  },
+  "required": [
+    "delta_ev",
+    "scale",
+    "severity"
+  ],
+  "additionalProperties": false
+}

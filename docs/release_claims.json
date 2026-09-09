@@ -1,0 +1,19 @@
+{
+  "expected": {
+    "metadata_rows": 610,
+    "metadata_fields": 27,
+    "clips_total": 610,
+    "clips_clean": 10,
+    "clips_corrupted": 600,
+    "scenarios": 10,
+    "corruption_types": 12,
+    "severity_levels_corrupted": 5,
+    "dev_rows": 305,
+    "test_rows": 305,
+    "frames_per_clip": 128,
+    "width": 1280,
+    "height": 720,
+    "fps": 30.0,
+    "fps_absolute_tolerance": 0.01
+  }
+}

@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
+import os
 import time
 from pathlib import Path
 from typing import List
@@ -12,10 +14,9 @@ from PIL import Image
 from transformers import DPTForDepthEstimation, DPTImageProcessor
 
 
-PROJECT_ROOT = Path("/home/sa/shiva/projects/drive-c")
-
-INPUT_ROOT = PROJECT_ROOT / "data/processed/drivec_core_frames"
-OUTPUT_ROOT = PROJECT_ROOT / "data/processed/drivec_core_depth"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+INPUT_ROOT = Path(os.environ.get("DRIVE_C_CLEAN_FRAMES_ROOT", PROJECT_ROOT / "data/processed/drivec_core_frames"))
+OUTPUT_ROOT = Path(os.environ.get("DRIVE_C_DEPTH_ROOT", PROJECT_ROOT / "data/processed/drivec_core_depth"))
 
 MODEL_ID = "Intel/dpt-beit-large-512"
 SAVE_VISUALIZATION = False
@@ -123,6 +124,15 @@ def process_scenario_dir(scenario_dir: Path, out_dir: Path, processor, model, de
 
 
 def main():
+    global INPUT_ROOT, OUTPUT_ROOT, MODEL_ID
+    parser = argparse.ArgumentParser(description="Generate depth maps for released clean frames")
+    parser.add_argument("--input-root", type=Path, default=INPUT_ROOT)
+    parser.add_argument("--output-root", type=Path, default=OUTPUT_ROOT)
+    parser.add_argument("--model-id", default=MODEL_ID)
+    args = parser.parse_args()
+    INPUT_ROOT = args.input_root
+    OUTPUT_ROOT = args.output_root
+    MODEL_ID = args.model_id
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"[INFO] Device: {device}")
 

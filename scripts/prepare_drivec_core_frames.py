@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import argparse
 import csv
+import os
 import shutil
 from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
 
-PROJECT_ROOT = Path("/home/sa/shiva/projects/drive-c")
-
-ANON_ROOT = PROJECT_ROOT / "data/processed/anonymized"
-CLIP_SELECTION_CSV = PROJECT_ROOT / "DRIVE-C-Core/clip_selection.csv"
-OUT_FRAMES_ROOT = PROJECT_ROOT / "data/processed/drivec_core_frames"
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
+ANON_ROOT = Path(os.environ.get("DRIVE_C_PRIVATE_ANON_ROOT", PROJECT_ROOT / "private/anonymized"))
+CLIP_SELECTION_CSV = Path(os.environ.get("DRIVE_C_CLIP_SELECTION", PROJECT_ROOT / "private/clip_selection.csv"))
+OUT_FRAMES_ROOT = Path(os.environ.get("DRIVE_C_CLEAN_FRAMES_ROOT", PROJECT_ROOT / "data/processed/drivec_core_frames"))
 
 
 @dataclass
@@ -80,6 +81,15 @@ def copy_subset(selection: ClipSelection) -> None:
 
 
 def main() -> None:
+    global ANON_ROOT, CLIP_SELECTION_CSV, OUT_FRAMES_ROOT
+    parser = argparse.ArgumentParser(description="Private acquisition-stage frame selection utility")
+    parser.add_argument("--anonymized-root", type=Path, default=ANON_ROOT)
+    parser.add_argument("--clip-selection", type=Path, default=CLIP_SELECTION_CSV)
+    parser.add_argument("--output-root", type=Path, default=OUT_FRAMES_ROOT)
+    args = parser.parse_args()
+    ANON_ROOT = args.anonymized_root
+    CLIP_SELECTION_CSV = args.clip_selection
+    OUT_FRAMES_ROOT = args.output_root
     selections = load_clip_selection(CLIP_SELECTION_CSV)
     ensure_dir(OUT_FRAMES_ROOT)
 

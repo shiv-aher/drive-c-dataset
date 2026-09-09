@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C defocus_blur extra_json",
+  "type": "object",
+  "properties": {
+    "d_f": {
+      "type": "number",
+      "minimum": 0.6720387935638428,
+      "maximum": 0.929093599319458
+    },
+    "invert_depth": {
+      "type": "boolean"
+    },
+    "n_layers": {
+      "type": "integer",
+      "minimum": 16.0,
+      "maximum": 16.0
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "sigma_max_eff": {
+      "type": "number",
+      "minimum": 2.4,
+      "maximum": 22.5
+    }
+  },
+  "required": [
+    "d_f",
+    "invert_depth",
+    "n_layers",
+    "severity",
+    "sigma_max_eff"
+  ],
+  "additionalProperties": false
+}

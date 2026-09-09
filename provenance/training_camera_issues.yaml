@@ -1,0 +1,85 @@
+version: v1.0
+task: camera_degradation_diagnosis
+
+groups:
+  environmental:
+    - haze_fog
+    - rain
+    - snow
+    - low_light
+
+  optical:
+    - motion_blur
+    - defocus_blur
+    - glare_flare
+    - vignetting
+
+  sensor_pipeline:
+    - sensor_noise
+    - exposure_shift
+    - compression
+
+  physical_occlusion:
+    - lens_occlusion
+
+issues:
+  haze_fog:
+    description: Atmospheric scattering reducing contrast and visibility.
+  rain:
+    description: Rain streaks or droplets obscuring image content.
+  snow:
+    description: Visual clutter from falling snow particles.
+  low_light:
+    description: Insufficient illumination causing low SNR.
+  motion_blur:
+    description: Directional blur due to camera or scene motion.
+  defocus_blur:
+    description: Blur caused by incorrect lens focus.
+  glare_flare:
+    description: Overexposed regions or lens artifacts from strong light sources.
+  vignetting:
+    description: Radial brightness falloff near image boundaries.
+  sensor_noise:
+    description: Random pixel-level intensity variations from sensor electronics.
+  exposure_shift:
+    description: Global over- or under-exposure due to AE errors.
+  compression:
+    description: Lossy compression artifacts degrading fine details.
+  lens_occlusion:
+    description: Partial lens blockage from dirt, mud, or debris.
+
+# ---------------------------------------------------------------------
+# Global Sensor Health Index (GSHI)
+# Multiplicative aggregation of degradation severities
+# h = ∏_i (1 - s_i)^{w_i}
+# ---------------------------------------------------------------------
+gshi:
+  type: multiplicative
+  eps: 1.0e-6
+  floor: 1.0e-3
+  ceil: 0.99
+  beta: 0.85
+
+  # Group-wise multipliers applied on top of per-issue base weights:
+  # effective_weight(issue i) = weights[i] * group_scale[group_of_i]
+  group_scale:
+    environmental: 1.00
+    optical: 1.10
+    sensor_pipeline: 0.95
+    physical_occlusion: 1.15
+
+  # Base per-issue weights (before group scaling)
+  weights:
+    haze_fog: 1.3
+    rain: 1.1
+    snow: 1.2
+    low_light: 1.3
+    motion_blur: 1.4
+    defocus_blur: 1.4
+    glare_flare: 1.5
+    vignetting: 0.7
+    sensor_noise: 1.1
+    exposure_shift: 1.0
+    compression: 0.8
+    lens_occlusion: 1.6
+

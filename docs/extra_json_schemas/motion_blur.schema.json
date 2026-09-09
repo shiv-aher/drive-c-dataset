@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C motion_blur extra_json",
+  "type": "object",
+  "properties": {
+    "accel": {
+      "type": "number",
+      "minimum": 0.05811878117965066,
+      "maximum": 0.6594119787344407
+    },
+    "ksize": {
+      "type": "integer",
+      "minimum": 11.0,
+      "maximum": 33.0
+    },
+    "linear": {
+      "type": "boolean"
+    },
+    "n_points": {
+      "type": "integer",
+      "minimum": 11.0,
+      "maximum": 32.0
+    },
+    "psf_smooth_sigma": {
+      "type": "number",
+      "minimum": 0.08664670814198881,
+      "maximum": 0.9896722575442354
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    }
+  },
+  "required": [
+    "accel",
+    "ksize",
+    "linear",
+    "n_points",
+    "psf_smooth_sigma",
+    "severity"
+  ],
+  "additionalProperties": false
+}

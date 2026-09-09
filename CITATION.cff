@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use DRIVE-C, please cite the dataset and descriptor paper."
+title: "DRIVE-C: A Controlled Corruption Dataset for Autonomous Driving"
+type: software
+version: 1.0.0
+date-released: 2026-09-09
+authors:
+  - family-names: Aher
+    given-names: Shiva
+    orcid: "https://orcid.org/0009-0008-3081-5266"
+repository-code: "https://github.com/shiv-aher/drive-c-dataset"
+license: MIT

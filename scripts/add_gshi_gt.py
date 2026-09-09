@@ -4,13 +4,14 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Dict, List
 
 THIS_FILE = Path(__file__).resolve()
-PROJECT_ROOT = THIS_FILE.parents[2]          # .../drive-c
-DATASET_ROOT = PROJECT_ROOT / "DRIVE-C-Core"
+PROJECT_ROOT = THIS_FILE.parents[1]
+DATASET_ROOT = Path(os.environ.get("DRIVE_C_DATASET_ROOT", PROJECT_ROOT / "dataset"))
 
 # Make repo imports work
 sys.path.insert(0, str(PROJECT_ROOT))

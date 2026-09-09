@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C overexposure extra_json",
+  "type": "object",
+  "properties": {
+    "delta_ev": {
+      "type": "number",
+      "minimum": 0.16,
+      "maximum": 1.5
+    },
+    "scale": {
+      "type": "number",
+      "minimum": 1.11728713807222,
+      "maximum": 2.8284271247461903
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    }
+  },
+  "required": [
+    "delta_ev",
+    "scale",
+    "severity"
+  ],
+  "additionalProperties": false
+}

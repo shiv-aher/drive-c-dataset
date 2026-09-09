@@ -1,220 +1,169 @@
-# drive-c-dataset
-DRIVE-C is a controlled degradation dataset designed for evaluating perception robustness, degradation awareness, and sensor health estimation in autonomous driving systems.
+# DRIVE-C
 
-The dataset combines **real-world driving data** with **physics-inspired synthetic degradations** applied across multiple severity levels, enabling reproducible and structured robustness evaluation. 
+DRIVE-C is a compact controlled testbed for evaluating degradation awareness,
+sensor-health estimation, and camera-perception robustness. It contains 10
+original forward-facing scenarios and 600 controlled corrupted variants: 12
+corruption types, five severity levels, and 10 scenarios, plus 10 clean clips.
 
-Please refer ```/dataset/README.md``` file for link to download the dataset.
+Dataset version DOI: <https://doi.org/10.5281/zenodo.19656444>
+Dataset concept DOI: <https://doi.org/10.5281/zenodo.19656443>
 
----
+## Reproducibility boundary
 
-## Highlights
+The public release supports validation and regeneration of corruptions and
+severity-derived GSHI labels from released anonymized clean material and frozen
+generation inputs. The original unprocessed recordings are not distributed
+because of privacy considerations. Acquisition, source-video clip selection,
+and initial anonymization are documented provenance steps, not a publicly
+rerunnable pipeline.
 
-- 10 real-world driving scenarios  
-- 12 corruption types (weather, optical, sensor, compression)  
-- 5 severity levels (s1–s5) + clean  
-- 610 video clips (~78K frames)  
-- Includes **Global Sensor Health Index (GSHI)** ground truth and predictions  
+`gshi_gt` is a deterministic severity-derived reference index. It is not an
+independent physical sensor measurement or a measurement of downstream
+perception reliability. `gshi_pred` is a PerceptionHealthNet model output.
 
----
+## Release contents
 
-## License
-
-- Code is licensed under the MIT License.
-- Dataset is licensed under the Creative Commons Attribution 4.0 (CC BY 4.0) License.
-
-Please cite the dataset and associated paper when used.
-
-## 📂 Repository Structure
-
-```
+```text
 drive-c-dataset/
-README.md
-LICENSE # MIT (code)
-requirements.txt
-scripts/ # dataset generation & processing
-simulation/ # corruption models
-configs/ # configuration files
-dataset/ # readme and dataset source
+  checkpoints/        frozen baseline checkpoint
+  configs/            taxonomy and generation/training policy
+  dataset/            metadata, reports, and dataset download guide
+  provenance/         frozen training provenance
+  scripts/            generation, labeling, inference, and analysis
+  simulation/         corruption and GSHI implementation
+  src/                baseline model and training data loader
+  docs/               metadata, schemas, model, GSHI, and validation records
+  RELEASE_MANIFEST.json
+  SHA256SUMS.txt
+  requirements.txt
+```
+
+The downloaded dataset archive has this structure:
+
+```text
+drive-c-core-v1/
+  clean_clips/        10 clips, S01_clean.mp4 ... S10_clean.mp4
+  corrupted/          600 clips grouped by corruption and severity
+  final_metadata.csv  610 rows, 27 fields
+  scenario_metadata.csv
 ```
 
 ## Environment
 
-Recommended Python version:
-- Python 3.10+
-
-Main Python packages:
-- numpy
-- pandas
-- scipy
-- scikit-learn
-- matplotlib
-- pillow
-- faiss
-- openpyxl (optional)
-
-Install dependencies with:
-```bash
-pip install -r requirements.txt
-```
-
-## Instruction to build the new dataset
-
-Inside each script, use this pattern:
-
-```
-from pathlib import Path
-import sys
-
-THIS_FILE = Path(__file__).resolve()
-PROJECT_ROOT = THIS_FILE.parents[1]   # DRIVE-C-DATASET
-DATASET_ROOT = PROJECT_ROOT / "dataset"
-CONFIG_ROOT = PROJECT_ROOT / "configs"
-
-sys.path.insert(0, str(PROJECT_ROOT))
-```
-
-That way all scripts work no matter where you launch them from, as long as you run them inside the repo.
-
-## Recommended dataset folder layout
-
-Please refer ```/dataset/README.md``` file for link to download the dataset.
-
-Inside dataset/, use this structure:
-
-```
-dataset/
-  clean_clips/
-  corrupted/
-  final_metadata.csv
-  samples_metadata.csv
-  samples_metadata_with_gshi.csv
-  samples_metadata_with_gshi_pred.csv
-  scenario_metadata.csv
-  gshi_pred_sanity_report.txt
-  gshi_pred_per_corruption_stats.csv
-  figures/
-```
-
-### Recommended config layout
-```
-configs/
-  taxonomy/
-    camera_issues.yaml
-```
-
-That camera_issues.yaml should be the same one used for gshi_gt.
-
-## Quick Start
-
-From the repository root:
+The release was audited with Python 3.10 and the versions pinned in
+`requirements.txt`. GPU inference was tested with PyTorch 2.10.0, torchvision
+0.25.0, and CUDA 12.8. A CPU installation may be used but will be slower.
 
 ```bash
-pip install -r requirements.txt
-
-python scripts/unified_generate_drivec.py
-python scripts/add_gshi_gt.py
-python scripts/add_gshi_pred.py --ckpt checkpoints/epoch_021_best.pth
-python scripts/make_final_metadata.py
-python scripts/analyze_gshi_pred.py
-python scripts/make_benchmark_figures.py
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r requirements.txt
+export DRIVE_C_DATASET_ROOT=/absolute/path/to/drive-c-core-v1
 ```
 
-## Generate corrupted clips and base metadata
+All commands below are run from the repository root.
 
-This script should read clean source clips, source metadata, corruption configs and
-write:
-dataset/clean_clips/
-dataset/corrupted/
-dataset/samples_metadata.csv
+## Frozen documentation
 
+- [Metadata dictionary](docs/metadata_dictionary.md)
+- [`extra_json` schemas](docs/extra_json_schema.md)
+- [GSHI definition and weights](docs/gshi_definition.md)
+- [PerceptionHealthNet provenance](docs/baseline_model.md)
+- [Regeneration boundary and audit](docs/regeneration.md)
+- [Release validation](docs/release_validation.md)
 
-Run for complete dataset:
-```
-python scripts/unified_generate_drivec.py
-```
+## Prepare released clean inputs for corruption regeneration
 
-Run for a small test:
-```
-python scripts/unified_generate_drivec.py --scenarios S01 --severity-names s3
-```
+```bash
+python scripts/extract_released_clean_frames.py \
+  --dataset-root "$DRIVE_C_DATASET_ROOT" \
+  --output-root work/clean_frames
 
-## Add ground-truth GSHI
-
-This should read:
-
-dataset/samples_metadata.csv
-configs/taxonomy/camera_issues.yaml
-
-and write:
-
-dataset/samples_metadata_with_gshi.csv
-
-Run:
-```
-python scripts/add_gshi_gt.py
+python scripts/generate_drivec_core_depth.py \
+  --input-root work/clean_frames \
+  --output-root work/depth
 ```
 
-If you want to be explicit:
-```
+The depth model identifier is frozen by the depth-generation command. The
+original pre-anonymization recordings are not required for this public stage.
+
+## Recompute reference GSHI
+
+```bash
 python scripts/add_gshi_gt.py \
-  --input-csv dataset/samples_metadata.csv \
-  --output-csv dataset/samples_metadata_with_gshi.csv \
+  --input-csv "$DRIVE_C_DATASET_ROOT/samples_metadata.csv" \
+  --output-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi.csv" \
   --taxonomy-yaml configs/taxonomy/camera_issues.yaml
 ```
 
-## Add predicted GSHI and degradation predictions
+The implementation is in `simulation/gshi_utils.py`; all weights and numerical
+settings are in `configs/taxonomy/camera_issues.yaml`.
 
-This should read:
+## Reproduce baseline predictions
 
-dataset/samples_metadata_with_gshi.csv
-model checkpoint
+PerceptionHealthNet uses an ImageNet-initialized EfficientNet-B2 backbone with
+presence, severity, health, and pixel heads. The checkpoint was trained on
+KITTI images with on-the-fly synthetic degradations; DRIVE-C was not its
+training dataset. Training code and frozen provenance are included.
 
-and write:
+Inference samples eight uniformly spaced frames from each 128-frame clip,
+resizes them directly to 384 x 1280, and averages frame-level outputs.
 
-dataset/samples_metadata_with_gshi_pred.csv
-
-Run:
-```
+```bash
 python scripts/add_gshi_pred.py \
-  --ckpt /path/to/checkpoint.pth
+  --ckpt checkpoints/epoch_021_best.pth \
+  --input-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi.csv" \
+  --output-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi_pred.csv" \
+  --taxonomy-yaml configs/taxonomy/camera_issues.yaml \
+  --H 384 --W 1280 --preprocess resize --num-frames 8 --batch-size 8 \
+  --presence-thresh 0.25
 ```
 
-## Merge GT and predictions into final metadata
+The model vocabulary includes `vignetting`, whereas DRIVE-C does not generate
+vignetting clips. A vignetting prediction is therefore a model-vocabulary
+output, not a DRIVE-C corruption label.
 
-This should read:
+## Reproduce metadata and analysis
 
-dataset/samples_metadata_with_gshi.csv
-dataset/samples_metadata_with_gshi_pred.csv
-
-and write:
-
-dataset/final_metadata.csv
-
-Run:
-```
-python scripts/make_final_metadata.py
-```
-
-Explicit version:
-```
+```bash
 python scripts/make_final_metadata.py \
-  --gt-csv dataset/samples_metadata_with_gshi.csv \
-  --pred-csv dataset/samples_metadata_with_gshi_pred.csv \
-  --out-csv dataset/final_metadata.csv
+  --gt-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi.csv" \
+  --pred-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi_pred.csv" \
+  --out-csv "$DRIVE_C_DATASET_ROOT/final_metadata.csv"
+
+python scripts/analyze_gshi_pred.py \
+  --input-csv "$DRIVE_C_DATASET_ROOT/final_metadata.csv" \
+  --report-txt "$DRIVE_C_DATASET_ROOT/gshi_pred_sanity_report.txt" \
+  --per-corr-csv "$DRIVE_C_DATASET_ROOT/gshi_pred_per_corruption_stats.csv"
+
+python scripts/make_benchmark_figures.py \
+  --final-metadata "$DRIVE_C_DATASET_ROOT/final_metadata.csv" \
+  --per-corr-stats "$DRIVE_C_DATASET_ROOT/gshi_pred_per_corruption_stats.csv" \
+  --outdir "$DRIVE_C_DATASET_ROOT/figures"
 ```
 
-## Run sanity analysis on predictions
+The reported 0.475 monotonicity fraction is computed over 120
+complete scenario-corruption five-level sequences (57 of 120 pass). The
+6-of-12 count is computed after averaging
+predictions across scenarios for each corruption and severity. These quantities
+therefore use different aggregation rules.
 
-This should read:
+## Validate a downloaded release
 
-dataset/final_metadata.csv
-
-and write:
-
-dataset/gshi_pred_sanity_report.txt
-dataset/gshi_pred_per_corruption_stats.csv
-
-Run:
+```bash
+python scripts/validate_release.py "$DRIVE_C_DATASET_ROOT"
+sha256sum --check SHA256SUMS.txt
 ```
-python scripts/analyze_gshi_pred.py
-```
+
+The validator checks the 610/10/600 counts, 27 metadata fields, scenario,
+corruption, severity and split counts, relative paths, JSON parsing, and video
+properties. `SHA256SUMS.txt` covers the code repository contents; dataset-video
+checksums are distributed with the dataset archive.
+
+## Licenses
+
+- Code: MIT License.
+- Dataset: Creative Commons Attribution 4.0 International (CC BY 4.0).
+
+Please cite the dataset version DOI and associated descriptor paper.

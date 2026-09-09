@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import csv
 import math
 from collections import defaultdict
@@ -11,8 +12,8 @@ from typing import Dict, List, Tuple
 
 
 THIS_FILE = Path(__file__).resolve()
-PROJECT_ROOT = THIS_FILE.parents[2]
-DATASET_ROOT = PROJECT_ROOT / "DRIVE-C-Core"
+PROJECT_ROOT = THIS_FILE.parents[1]
+DATASET_ROOT = Path(os.environ.get("DRIVE_C_DATASET_ROOT", PROJECT_ROOT / "dataset"))
 
 DEFAULT_INPUT_CSV = DATASET_ROOT / "final_metadata.csv"
 DEFAULT_REPORT_TXT = DATASET_ROOT / "gshi_pred_sanity_report.txt"

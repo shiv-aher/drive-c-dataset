@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C jpeg_compression extra_json",
+  "type": "object",
+  "properties": {
+    "encode_ok": {
+      "type": "boolean"
+    },
+    "quality": {
+      "type": "integer",
+      "minimum": 30.0,
+      "maximum": 91.0
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    }
+  },
+  "required": [
+    "encode_ok",
+    "quality",
+    "severity"
+  ],
+  "additionalProperties": false
+}

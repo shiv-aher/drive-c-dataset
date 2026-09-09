@@ -1,0 +1,27 @@
+{
+  "release": "DRIVE-C code v1.0.0",
+  "status": "validated-for-release",
+  "code_tag": "v1.0.0",
+  "git_commit": "RESOLVE_FROM_ANNOTATED_TAG_v1.0.0",
+  "dataset_version_doi": "10.5281/zenodo.19656444",
+  "dataset_concept_doi": "10.5281/zenodo.19656443",
+  "software_doi": null,
+  "checkpoint": {
+    "path": "checkpoints/epoch_021_best.pth",
+    "sha256": "c210d9a4f207584687583d1ab5b96a99e12b2f3dbb2727464c6c039e44fb8c0b"
+  },
+  "frozen_files": {
+    "configs/taxonomy/camera_issues.yaml": "4a1f8e7fa1c7a2e02220c013316841afec8435414694bc378eee0f01252eb826",
+    "dataset/final_metadata.csv": "333ba2a414669c5f2ea889c5dee586f2a81c712230bdcf14d64bb124b14569cd",
+    "dataset/scenario_metadata.csv": "bf31a7e753ee80f3a5fc2eb6943a2c9d175412a087a3178c16a4e3a8e8f9b27d"
+  },
+  "environment": {
+    "python": "3.10",
+    "pytorch": "2.10.0+cu128",
+    "torchvision": "0.25.0+cu128",
+    "opencv_python_headless": "4.11.0.86",
+    "numpy": "1.26.4"
+  },
+  "integrity_manifest": "SHA256SUMS.txt",
+  "notes": "The annotated v1.0.0 tag identifies the exact commit without creating a self-referential tracked manifest. The software DOI is filled after the archive exists."
+}

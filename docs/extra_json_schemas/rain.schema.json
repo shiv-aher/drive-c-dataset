@@ -1,0 +1,142 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DRIVE-C rain extra_json",
+  "type": "object",
+  "properties": {
+    "alpha": {
+      "type": "number",
+      "minimum": 0.08846772886943353,
+      "maximum": 0.24624281572612547
+    },
+    "apply_overcast_sky": {
+      "type": "boolean"
+    },
+    "apply_rain_haze": {
+      "type": "boolean"
+    },
+    "apply_visibility_blur": {
+      "type": "boolean"
+    },
+    "base_angle_deg": {
+      "type": "number",
+      "minimum": 70.07746376771317,
+      "maximum": 89.19493473636318
+    },
+    "blur_sigma": {
+      "type": "number",
+      "minimum": 0.27950221809197334,
+      "maximum": 0.7538007260501787
+    },
+    "brightness_randomness": {
+      "type": "boolean"
+    },
+    "density": {
+      "type": "number",
+      "minimum": 0.0014367854198794456,
+      "maximum": 0.006702535489433998
+    },
+    "density_far": {
+      "type": "number",
+      "minimum": 0.0009339105229216396,
+      "maximum": 0.004356648068132098
+    },
+    "density_near": {
+      "type": "number",
+      "minimum": 0.0005028748969578059,
+      "maximum": 0.002345887421301899
+    },
+    "depth_separation_exp": {
+      "type": "number",
+      "minimum": 1.6,
+      "maximum": 1.6
+    },
+    "device": {
+      "type": "string"
+    },
+    "eta": {
+      "type": "number",
+      "minimum": 0.649088757709871,
+      "maximum": 1.6160118446684963
+    },
+    "extra_desat": {
+      "type": "number",
+      "minimum": 0.0048,
+      "maximum": 0.045
+    },
+    "far_angle_deg": {
+      "type": "number",
+      "minimum": 64.47791446828971,
+      "maximum": 93.92566947773264
+    },
+    "invert_depth": {
+      "type": "boolean"
+    },
+    "mask_mean": {
+      "type": "number",
+      "minimum": 0.008593648672103882,
+      "maximum": 0.08479964733123779
+    },
+    "multilayer": {
+      "type": "boolean"
+    },
+    "near_angle_deg": {
+      "type": "number",
+      "minimum": 64.55112620690296,
+      "maximum": 94.61955822552312
+    },
+    "overcast_mask_mean": {
+      "type": "number",
+      "minimum": 3.870172440656461e-05,
+      "maximum": 0.20562978088855743
+    },
+    "patchiness": {
+      "type": "boolean"
+    },
+    "rain_haze_strength": {
+      "type": "number",
+      "minimum": 0.041999999999999996,
+      "maximum": 0.1425
+    },
+    "rainy_tone": {
+      "type": "boolean"
+    },
+    "severity": {
+      "type": "number",
+      "minimum": 0.08,
+      "maximum": 0.75
+    },
+    "visibility_blur_sigma": {
+      "type": "number",
+      "minimum": 0.0,
+      "maximum": 0.0
+    }
+  },
+  "required": [
+    "alpha",
+    "apply_overcast_sky",
+    "apply_rain_haze",
+    "apply_visibility_blur",
+    "base_angle_deg",
+    "blur_sigma",
+    "brightness_randomness",
+    "density",
+    "density_far",
+    "density_near",
+    "depth_separation_exp",
+    "device",
+    "eta",
+    "extra_desat",
+    "far_angle_deg",
+    "invert_depth",
+    "mask_mean",
+    "multilayer",
+    "near_angle_deg",
+    "overcast_mask_mean",
+    "patchiness",
+    "rain_haze_strength",
+    "rainy_tone",
+    "severity",
+    "visibility_blur_sigma"
+  ],
+  "additionalProperties": false
+}

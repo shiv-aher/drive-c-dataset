@@ -3,7 +3,7 @@
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-DRIVE-C is a video clip dataset for benchmarking visual perception robustness in autonomous driving systems. It pairs real-world forward-facing driving footage with 12 types of synthetic degradation, each applied at 5 severity levels, providing a controlled and reproducible benchmark for degradation-aware modeling and sensor health estimation.
+DRIVE-C is a compact controlled video testbed for studying camera-degradation awareness and visual perception robustness in autonomous-driving settings. It pairs 10 real-world forward-facing scenarios with 12 types of synthetic degradation, each applied at 5 severity levels, yielding 600 corrupted variants plus 10 clean clips.
 
 Download full dataset from:
 https://doi.org/10.5281/zenodo.19656444
@@ -145,7 +145,7 @@ One row per clip. Key fields:
 | `num_frames` | Integer | Number of frames (128 for all clips) |
 | `output_path` | String | Relative path to the MP4 file |
 | `extra_json` | JSON | Per-clip generation parameters for reproducibility |
-| `gshi_gt` | Float | Ground-truth GSHI (see below) |
+| `gshi_gt` | Float | Severity-derived reference GSHI; the column name is retained for schema compatibility |
 | `gshi_pred` | Float | Baseline model (PerceptionHealthNet) predicted GSHI |
 | `pred_top1_issue` | String | Highest-probability predicted degradation class |
 | `pred_top1_prob` | Float | Probability of the top predicted class |
@@ -158,14 +158,14 @@ Per-scenario fields including source video ID, clip frame range, capture date, n
 
 ## Global Sensor Health Index (GSHI)
 
-The **Global Sensor Health Index (GSHI)** is a scalar metric in [0, 1] quantifying perceptual reliability under degradation.
+The **Global Sensor Health Index (GSHI)** is a scalar index in [0, 1] used for consistent severity-aware comparison under prescribed degradations.
 
 - **1.0** → clean, unimpaired image
 - **0.0** → severe degradation
 
-Ground-truth GSHI (`gshi_gt`) is computed deterministically from the applied severity and per-corruption taxonomy weights. It decreases monotonically from s1 to s5 for all 12 corruption types.
+Severity-derived reference GSHI is stored under the historical schema field name `gshi_gt`. It is computed deterministically from the applied severity and per-corruption taxonomy weights and decreases monotonically from s1 to s5 for all 12 corruption types. It is not an independently measured indicator of physical sensor health or downstream perception reliability.
 
-The `gshi_pred` field contains predictions from **PerceptionHealthNet**, a baseline model included to provide a starting benchmark. Overall Pearson r = 0.34 across all 610 clips. The model performs well on underexposure (r = 0.77) and motion blur (r = 0.73), but struggles with sensor noise (r = −0.16), JPEG compression (r = 0.09), and defocus blur (r = 0.12) — establishing these as open research challenges.
+The `gshi_pred` field contains predictions from **PerceptionHealthNet**, an illustrative baseline model. Overall Pearson r = 0.34 across all 610 clips. The model performs better on underexposure (r = 0.77) and motion blur (r = 0.73), but struggles with sensor noise (r = −0.16), JPEG compression (r = 0.09), and defocus blur (r = 0.12), leaving these as open modeling challenges.
 
 ---
 
@@ -198,7 +198,7 @@ print(df["corruption_type"].value_counts())
 row = df[df["sample_id"] == "S03_motion_blur_s4"].iloc[0]
 clip_path = row["output_path"]   # e.g. corrupted/motion_blur/s4/S03_motion_blur_s4.mp4
 severity  = row["severity_value"]  # 0.55
-gshi      = row["gshi_gt"]         # ground-truth health score
+gshi      = row["gshi_gt"]         # severity-derived reference GSHI
 ```
 
 ### Load all clips for one corruption type
@@ -247,7 +247,7 @@ The processing pipeline, corruption generator, and baseline model are available 
 
 **https://github.com/shiv-aher/drive-c-dataset**
 
-The repository includes scripts for clip extraction, anonymization, corruption generation, GSHI computation, and metadata validation. All per-clip generation parameters are stored in the `extra_json` field of `final_metadata.csv`, enabling any individual clip to be regenerated independently.
+The public repository supports regeneration of corruption variants and severity-derived reference GSHI from the released anonymized clean clips. Original unprocessed recordings are private and are not required for this public regeneration stage. All per-clip generation parameters are stored in the `extra_json` field of `final_metadata.csv`.
 
 ---
 
@@ -261,7 +261,8 @@ If you use DRIVE-C in your research, please cite:
   title        = {DRIVE-C: A Controlled Corruption Dataset for Autonomous Driving},
   year         = {2026},
   note         = {Under review at IEEE Data Descriptions},
-  howpublished = {\url{https://github.com/shiv-aher/drive-c}}
+  doi          = {10.5281/zenodo.19656444},
+  url          = {https://github.com/shiv-aher/drive-c-dataset}
 }
 ```
 
