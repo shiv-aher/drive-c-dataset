@@ -37,11 +37,12 @@ class PixelHead(nn.Module):
         self.out = nn.Conv2d(64, 1, kernel_size=1)
 
     def forward(self, feat: torch.Tensor, out_hw: Tuple[int, int]) -> torch.Tensor:
+        """Return pixel-quality logits; sigmoid is applied only for probabilities."""
         x = self.block1(feat)
         x = self.block2(x)
         x = self.out(x)
         x = F.interpolate(x, size=out_hw, mode="bilinear", align_corners=False)
-        return torch.sigmoid(x)
+        return x
 
 
 class PerceptionHealthNet(nn.Module):
@@ -67,6 +68,17 @@ class PerceptionHealthNet(nn.Module):
         # Pixel head: lazy init because channel dims depend on tap point
         self._tap_index = 4 if cfg.pixel_feature_level == "mid" else -2
         self._pixel_head: Optional[PixelHead] = None
+
+    def initialize_pixel_head(self, input_hw: Tuple[int, int], device: torch.device) -> None:
+        """Instantiate the lazy pixel head before constructing an optimizer."""
+        if not self.cfg.pixel_head or self._pixel_head is not None:
+            return
+        was_training = self.training
+        self.eval()
+        with torch.no_grad():
+            dummy = torch.zeros(1, 3, input_hw[0], input_hw[1], device=device)
+            self(dummy)
+        self.train(was_training)
 
     def _run_features(self, x: torch.Tensor):
         tap = None
@@ -98,6 +110,6 @@ class PerceptionHealthNet(nn.Module):
         if self.cfg.pixel_head:
             if self._pixel_head is None:
                 self._pixel_head = PixelHead(in_ch=tap.shape[1]).to(tap.device)
-            out["pred_pix"] = self._pixel_head(tap, out_hw=(H, W))
+            out["pred_pix"] = self._pixel_head(tap, out_hw=(H, W))  # logits
 
         return out

@@ -242,13 +242,15 @@ class TrainConfig:
     weight_decay: float = 1e-4
 
     # resume
-    resume_ckpt = "output/checkpoints/epoch_019.pth"
+    # Corrected Version 3 training starts from epoch 0. An old optimizer state
+    # predates the pixel-head fix and must not be resumed for the primary run.
+    resume_ckpt = None
 
 
     # logging / output
-    out_dir: str = "output"
-    ckpt_dir: str = "output/checkpoints"
-    log_csv: str = "output/train_log.csv"
+    out_dir: str = os.environ.get("DRIVEC_TRAIN_OUT", "output")
+    ckpt_dir: str = os.path.join(os.environ.get("DRIVEC_TRAIN_OUT", "output"), "checkpoints")
+    log_csv: str = os.path.join(os.environ.get("DRIVEC_TRAIN_OUT", "output"), "train_log.csv")
 
     # loss weights
     w_cls: float = 1.0
@@ -257,7 +259,7 @@ class TrainConfig:
     w_pix: float = 0.25
 
     # dataset root
-    root: str = "data/kitti"
+    root: str = os.environ.get("DRIVEC_KITTI_ROOT", "data/kitti")
 
     train_images_dir: str = "images/data_object_image_2/training/image_2"
     train_depth_dir: str = "depth/midas/norm"
@@ -369,6 +371,11 @@ def main():
         pretrained=True,
     ).to(device)
 
+    # The pixel head is lazy because its input channel count depends on the
+    # selected backbone tap. Materialize it before optimizer construction so
+    # every trainable parameter is included in the optimizer.
+    model.initialize_pixel_head(cfg.img_hw, device)
+
     optimizer = optim.AdamW(model.parameters(), lr=cfg.lr, weight_decay=cfg.weight_decay)
     bce_logits = nn.BCEWithLogitsLoss()
     huber = nn.SmoothL1Loss()
@@ -379,12 +386,6 @@ def main():
     start_epoch = 0
     if cfg.resume_ckpt is not None and os.path.exists(cfg.resume_ckpt):
         ckpt = torch.load(cfg.resume_ckpt, map_location="cpu")
-
-        # Warm-up to instantiate lazy heads (if any)
-        model.eval()
-        with torch.no_grad():
-            dummy = torch.zeros(1, 3, cfg.img_hw[0], cfg.img_hw[1], device=device)
-            _ = model(dummy)
 
         model.load_state_dict(ckpt["model"], strict=True)
         optimizer.load_state_dict(ckpt["optimizer"])
@@ -413,6 +414,7 @@ def main():
     # -------------------------
     # Train loop
     # -------------------------
+    best_health_mae = float("inf")
     for epoch in range(start_epoch, cfg.epochs):
         model.train()
         total_loss = 0.0
@@ -507,6 +509,26 @@ def main():
                 f"{metrics['macro_auprc']},{metrics['micro_auprc']},"
                 f"{metrics['auprc_valid_classes']},{metrics['auprc_skipped_classes']},"
                 f"{metrics['sev_mae']},{metrics['health_mae']},{metrics['pix_bce']},{metrics['mask_rate']}\n"
+            )
+
+        # Prespecified checkpoint rule for the primary scalar-health baseline:
+        # select the lowest held-out KITTI health MAE, without consulting DRIVE-C.
+        if metrics["health_mae"] < best_health_mae:
+            best_health_mae = metrics["health_mae"]
+            best_path = os.path.join(cfg.ckpt_dir, "best_health_mae.pth")
+            torch.save(
+                {
+                    "epoch": epoch,
+                    "model": model.state_dict(),
+                    "optimizer": optimizer.state_dict(),
+                    "validation_metrics": metrics,
+                    "selection_rule": "minimum held-out KITTI health_mae",
+                },
+                best_path,
+            )
+            print(
+                f"[BEST] health_MAE={best_health_mae:.6f} at epoch {epoch}; "
+                f"saved {best_path}"
             )
 
 

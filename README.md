@@ -1,16 +1,20 @@
 # DRIVE-C
 
+Corrected Version 3 code release: `v1.1.0` (October 17, 2026). The earlier
+`v1.0.1` tag remains historical provenance for the Version 2 baseline and
+must not be used to reproduce the corrected results reported here.
+
 DRIVE-C is a compact controlled testbed for evaluating degradation awareness,
-sensor-health estimation, and camera-perception robustness. It contains 10
+configured health-index estimation, and camera-prediction consistency. It contains 10
 original forward-facing scenarios and 600 controlled corrupted variants: 12
 corruption types, five severity levels, and 10 scenarios, plus 10 clean clips.
 
-Dataset version DOI: <https://doi.org/10.5281/zenodo.19656444>
+Dataset version DOI: <https://doi.org/10.5281/zenodo.19656444>  
 Dataset concept DOI: <https://doi.org/10.5281/zenodo.19656443>
 
 ## Reproducibility boundary
 
-The public release supports validation and regeneration of corruptions and
+This corrected release candidate supports validation and regeneration of corruptions and
 severity-derived GSHI labels from released anonymized clean material and frozen
 generation inputs. The original unprocessed recordings are not distributed
 because of privacy considerations. Acquisition, source-video clip selection,
@@ -25,16 +29,13 @@ perception reliability. `gshi_pred` is a PerceptionHealthNet model output.
 
 ```text
 drive-c-dataset/
-  checkpoints/        frozen baseline checkpoint
+  checkpoints/        selected corrected baseline checkpoint
   configs/            taxonomy and generation/training policy
   dataset/            metadata, reports, and dataset download guide
   provenance/         frozen training provenance
   scripts/            generation, labeling, inference, and analysis
   simulation/         corruption and GSHI implementation
   src/                baseline model and training data loader
-  docs/               metadata, schemas, model, GSHI, and validation records
-  RELEASE_MANIFEST.json
-  SHA256SUMS.txt
   requirements.txt
 ```
 
@@ -50,9 +51,14 @@ drive-c-core-v1/
 
 ## Environment
 
-The release was audited with Python 3.10 and the versions pinned in
-`requirements.txt`. GPU inference was tested with PyTorch 2.10.0, torchvision
-0.25.0, and CUDA 12.8. A CPU installation may be used but will be slower.
+The corrected training run used Python 3.10.20, PyTorch 2.10.0, torchvision
+0.25.0, and CUDA 12.8. Its complete package snapshot is
+`provenance/corrected_training_pip_freeze.txt`; the exact training protocol is
+recorded with the run outputs. The existing `provenance/environment.yaml` is
+retained as historical provenance for the recovered Version 2 training run and
+must not be interpreted as the corrected-run environment. The versions in
+`requirements.txt` define the lean reproduction environment. A CPU
+installation may be used for inference but will be slower.
 
 ```bash
 python -m venv .venv
@@ -64,66 +70,20 @@ export DRIVE_C_DATASET_ROOT=/absolute/path/to/drive-c-core-v1
 
 All commands below are run from the repository root.
 
-## Frozen documentation
-
-- [Metadata dictionary](docs/metadata_dictionary.md)
-- [`extra_json` schemas](docs/extra_json_schema.md)
-- [GSHI definition and weights](docs/gshi_definition.md)
-- [PerceptionHealthNet provenance](docs/baseline_model.md)
-- [Regeneration boundary and audit](docs/regeneration.md)
-- [Release validation](docs/release_validation.md)
-
-## Regenerate corruptions from the released clean clips
-
-Keep the downloaded release separate from generated outputs. The following
-variables make every input and output path explicit:
+## Prepare released clean inputs for corruption regeneration
 
 ```bash
-export DRIVE_C_RELEASE_ROOT=/absolute/path/to/drive-c-core-v1
-export DRIVE_C_CLEAN_FRAMES_ROOT="$PWD/work/clean_frames"
-export DRIVE_C_DEPTH_ROOT="$PWD/work/depth"
-
 python scripts/extract_released_clean_frames.py \
-  --dataset-root "$DRIVE_C_RELEASE_ROOT" \
-  --output-root "$DRIVE_C_CLEAN_FRAMES_ROOT"
+  --dataset-root "$DRIVE_C_DATASET_ROOT" \
+  --output-root work/clean_frames
 
 python scripts/generate_drivec_core_depth.py \
-  --input-root "$DRIVE_C_CLEAN_FRAMES_ROOT" \
-  --output-root "$DRIVE_C_DEPTH_ROOT"
+  --input-root work/clean_frames \
+  --output-root work/depth
 ```
 
 The depth model identifier is frozen by the depth-generation command. The
 original pre-anonymization recordings are not required for this public stage.
-
-For a one-scenario, one-corruption smoke test, use a new output directory and
-copy the released scenario metadata required by the generator:
-
-```bash
-export DRIVE_C_DATASET_ROOT="$PWD/work/regenerated-smoke"
-mkdir -p "$DRIVE_C_DATASET_ROOT"
-cp "$DRIVE_C_RELEASE_ROOT/scenario_metadata.csv" "$DRIVE_C_DATASET_ROOT/"
-
-python scripts/unified_generate_drivec.py \
-  --scenarios S01 \
-  --corruptions motion_blur \
-  --severity-names s3
-```
-
-For full-dataset regeneration, use a different empty output directory so that
-the generated metadata cannot omit outputs skipped from an earlier smoke test:
-
-```bash
-export DRIVE_C_DATASET_ROOT="$PWD/work/regenerated-full"
-mkdir -p "$DRIVE_C_DATASET_ROOT"
-cp "$DRIVE_C_RELEASE_ROOT/scenario_metadata.csv" "$DRIVE_C_DATASET_ROOT/"
-
-python scripts/unified_generate_drivec.py
-```
-
-The generator reads clean frames from `DRIVE_C_CLEAN_FRAMES_ROOT`, depth maps
-from `DRIVE_C_DEPTH_ROOT`, and writes clips and `samples_metadata.csv` beneath
-`DRIVE_C_DATASET_ROOT`. Start each regeneration run with an empty output
-directory.
 
 ## Recompute reference GSHI
 
@@ -142,14 +102,22 @@ settings are in `configs/taxonomy/camera_issues.yaml`.
 PerceptionHealthNet uses an ImageNet-initialized EfficientNet-B2 backbone with
 presence, severity, health, and pixel heads. The checkpoint was trained on
 KITTI images with on-the-fly synthetic degradations; DRIVE-C was not its
-training dataset. Training code and frozen provenance are included.
+training dataset. The Version 3 training path corrects three audited defects:
+the pixel head now emits logits for BCE-with-logits, is materialized before
+optimizer construction, and the health target applies the configured GSHI
+beta/floor/ceiling. Gradient and optimizer-coverage tests, training code, and
+frozen provenance are included.
+
+The selected checkpoint is epoch 7, chosen only by minimum held-out KITTI
+health MAE (0.106707), not by DRIVE-C results. Its SHA-256 is
+`fcfb0ea54d6329bae2756f5fd32c39be860a90b04967dfde97f7b213c316836c`.
 
 Inference samples eight uniformly spaced frames from each 128-frame clip,
 resizes them directly to 384 x 1280, and averages frame-level outputs.
 
 ```bash
 python scripts/add_gshi_pred.py \
-  --ckpt checkpoints/epoch_021_best.pth \
+  --ckpt checkpoints/best_health_mae.pth \
   --input-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi.csv" \
   --output-csv "$DRIVE_C_DATASET_ROOT/samples_metadata_with_gshi_pred.csv" \
   --taxonomy-yaml configs/taxonomy/camera_issues.yaml \
@@ -180,23 +148,25 @@ python scripts/make_benchmark_figures.py \
   --outdir "$DRIVE_C_DATASET_ROOT/figures"
 ```
 
-The reported 0.475 monotonicity fraction is computed over 120
-complete scenario-corruption five-level sequences (57 of 120 pass). The
-6-of-12 count is computed after averaging
-predictions across scenarios for each corruption and severity. These quantities
-therefore use different aggregation rules.
+For the corrected checkpoint, the reported 0.508 monotonicity fraction is 61
+of 120 complete scenario-corruption sequences. The 9-of-12 count is computed
+after averaging predictions across scenarios for each corruption and severity.
+These quantities therefore use different aggregation rules. Across all 610
+clips, the corrected raw predictions have Pearson `r=0.382`, Spearman
+`rho=0.376`, MAE `0.299`, and RMSE `0.365`; the substantial clean-clip MAE
+(`0.570`) should be retained when reporting the baseline.
 
-## Validate a downloaded release
+## Validate the corrected training path
 
 ```bash
-python scripts/validate_release.py "$DRIVE_C_DATASET_ROOT"
-sha256sum --check SHA256SUMS.txt
+pytest -q tests/test_pixel_head_training.py tests/test_gshi_training_target.py
+python scripts/smoke_test_corrected_training.py
 ```
 
-The validator checks the 610/10/600 counts, 27 metadata fields, scenario,
-corruption, severity and split counts, relative paths, JSON parsing, and video
-properties. `SHA256SUMS.txt` covers the code repository contents; dataset-video
-checksums are distributed with the dataset archive.
+The pixel head is auxiliary and does not feed the scalar health prediction at
+inference. Its target is the union of eligible simulator masks for fog, rain,
+snow, glare/flare, and lens occlusion; samples without an eligible mask do not
+contribute pixel loss.
 
 ## Licenses
 

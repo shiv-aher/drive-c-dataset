@@ -1,4 +1,8 @@
-# DRIVE-C v1.0.0 release validation
+# Historical DRIVE-C v1.0.0 release validation
+
+> This record is retained for historical provenance. For the corrected Version
+> 3 release, use tag `v1.1.0`, `RELEASE_MANIFEST.json`, and
+> `RELEASE_SHA256SUMS.txt`.
 
 Candidate status: **technical validation passed; public tag/archive pending**
 

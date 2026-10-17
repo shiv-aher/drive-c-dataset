@@ -20,7 +20,7 @@ def compute_gshi(
     weights = gshi_cfg.get("weights", {}) or {}
     group_scale = gshi_cfg.get("group_scale", {}) or {}
 
-    h = 1.0
+    log_h = 0.0
     for i, name in enumerate(issues):
         s = float(y_sev[i])
         base_w = float(weights.get(name, 1.0))
@@ -29,9 +29,13 @@ def compute_gshi(
         eff_w = base_w * alpha
 
         term = max(1.0 - s, eps)
-        h *= term ** eff_w
+        log_h += eff_w * float(np.log(term))
 
-    return float(np.clip(h, 0.0, 1.0))
+    beta = float(gshi_cfg.get("beta", 0.85))
+    floor = float(gshi_cfg.get("floor", 1e-3))
+    ceil = float(gshi_cfg.get("ceil", 0.99))
+    h = float(np.exp(beta * log_h))
+    return float(np.clip(h, floor, ceil))
 
 
 def union_mask(masks: Dict[str, Optional[np.ndarray]], H: int, W: int) -> Optional[np.ndarray]:

@@ -1,23 +1,18 @@
 # Changelog
 
+## 1.1.0 — 2026-10-17
+
+- Corrected the pixel head to emit logits for binary-cross-entropy with logits.
+- Materialized the pixel head before optimizer construction and added gradient
+  and optimizer-coverage tests.
+- Corrected the health target to use the configured GSHI beta, floor, and
+  ceiling.
+- Added the corrected epoch-7 checkpoint selected by held-out KITTI health MAE.
+- Added frozen corrected-training provenance, environment information, and
+  release checksums.
+- Updated documentation to distinguish configured health-index estimation from
+  physical sensor-health measurement.
+
 ## 1.0.1 — 2026-09-09
 
-- Documented explicit input and output roots for corruption regeneration.
-- Added separate smoke-test and full-dataset generation commands to prevent
-  skipped outputs from producing incomplete regenerated metadata.
-
-## 1.0.0 — 2026-09-09
-
-- Added the complete PerceptionHealthNet implementation, training program,
-  checkpoint, KITTI split provenance, frozen configurations, and inference
-  documentation.
-- Made scripts portable through repository-relative paths and
-  `DRIVE_C_DATASET_ROOT`.
-- Added all missing corruption generators and benchmark-figure generation.
-- Added the 27-field metadata dictionary and schemas for all 13 `extra_json`
-  categories.
-- Added release validation, checksums, citation metadata, and environment pins.
-- Standardized GSHI language as a severity-derived reference value rather than
-  independently measured sensor health or downstream reliability.
-- Documented the public regeneration boundary from anonymized clean clips.
-- Removed obsolete empty configuration files.
+- Historical Version 2 release; retained for provenance only.

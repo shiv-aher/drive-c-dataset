@@ -4,31 +4,31 @@ Total rows: 610
 Clean rows: 10
 Corrupted rows: 600
 
-Overall Pearson(gshi_gt, gshi_pred):  0.338771
-Overall Spearman(gshi_gt, gshi_pred): 0.341117
+Overall Pearson(gshi_gt, gshi_pred):  0.381633
+Overall Spearman(gshi_gt, gshi_pred): 0.375851
 
-Mean gshi_pred on clean clips:      0.380315
-Mean gshi_pred on corrupted clips:  0.283472
+Mean gshi_pred on clean clips:      0.429910
+Mean gshi_pred on corrupted clips:  0.339394
 
-Fraction of (scenario, corruption) groups with monotonic non-increasing gshi_pred from s1->s5: 0.475000
+Fraction of (scenario, corruption) groups with monotonic non-increasing gshi_pred from s1->s5: 0.508333
 
 Per-corruption summary:
-- defocus_blur: pearson=0.121869, spearman=0.134259, s1=0.380137, s3=0.377872, s5=0.325060, monotonic=0
-- fog: pearson=0.501605, spearman=0.551735, s1=0.057073, s3=0.040586, s5=0.027748, monotonic=1
-- glare_flare: pearson=0.556090, spearman=0.548795, s1=0.354719, s3=0.285869, s5=0.135253, monotonic=1
-- jpeg_compression: pearson=0.085438, spearman=0.069579, s1=0.371802, s3=0.385631, s5=0.332611, monotonic=0
-- lens_occlusion: pearson=0.472419, spearman=0.445896, s1=0.340749, s3=0.309023, s5=0.167003, monotonic=1
-- low_light: pearson=0.600723, spearman=0.558595, s1=0.426283, s3=0.459988, s5=0.171191, monotonic=0
-- motion_blur: pearson=0.734767, spearman=0.798693, s1=0.229386, s3=0.134737, s5=0.041256, monotonic=1
-- overexposure: pearson=0.514067, spearman=0.453736, s1=0.433690, s3=0.367808, s5=0.230212, monotonic=0
-- rain: pearson=0.640980, spearman=0.653655, s1=0.322107, s3=0.226195, s5=0.131643, monotonic=1
-- sensor_noise: pearson=-0.158836, spearman=-0.168559, s1=0.388282, s3=0.522192, s5=0.456695, monotonic=0
-- snow: pearson=0.290918, spearman=0.273418, s1=0.372184, s3=0.353811, s5=0.258780, monotonic=0
-- underexposure: pearson=0.765177, spearman=0.839853, s1=0.352888, s3=0.207608, s5=0.058903, monotonic=1
+- defocus_blur: pearson=0.032786, spearman=0.076439, s1=0.429885, s3=0.430711, s5=0.410691, monotonic=0
+- fog: pearson=0.142102, spearman=0.159739, s1=0.203946, s3=0.196724, s5=0.191404, monotonic=1
+- glare_flare: pearson=0.542185, spearman=0.516456, s1=0.393459, s3=0.320747, s5=0.179263, monotonic=1
+- jpeg_compression: pearson=0.034427, spearman=0.058800, s1=0.430042, s3=0.442804, s5=0.417681, monotonic=0
+- lens_occlusion: pearson=0.633438, spearman=0.649735, s1=0.424020, s3=0.351512, s5=0.166933, monotonic=1
+- low_light: pearson=0.507150, spearman=0.423357, s1=0.529856, s3=0.496085, s5=0.343168, monotonic=1
+- motion_blur: pearson=0.700398, spearman=0.745774, s1=0.339152, s3=0.250808, s5=0.124683, monotonic=1
+- overexposure: pearson=0.502493, spearman=0.483136, s1=0.427094, s3=0.340130, s5=0.242471, monotonic=1
+- rain: pearson=0.731132, spearman=0.762434, s1=0.385809, s3=0.287780, s5=0.180139, monotonic=1
+- sensor_noise: pearson=0.286646, spearman=0.347897, s1=0.427234, s3=0.397481, s5=0.327412, monotonic=1
+- snow: pearson=0.496904, spearman=0.514496, s1=0.408516, s3=0.350195, s5=0.234544, monotonic=1
+- underexposure: pearson=0.213240, spearman=0.265578, s1=0.399817, s3=0.333401, s5=0.335931, monotonic=0
 
 Lowest-predicted clean clips:
-- S08_clean: gshi_pred=0.149144, top1=vignetting, top1_prob=0.991926
-- S07_clean: gshi_pred=0.181393, top1=vignetting, top1_prob=0.999991
-- S01_clean: gshi_pred=0.221905, top1=compression, top1_prob=0.999958
-- S06_clean: gshi_pred=0.304676, top1=vignetting, top1_prob=0.999489
-- S09_clean: gshi_pred=0.342700, top1=compression, top1_prob=0.999960
+- S08_clean: gshi_pred=0.189959, top1=compression, top1_prob=0.909262
+- S07_clean: gshi_pred=0.197767, top1=compression, top1_prob=0.852402
+- S06_clean: gshi_pred=0.206507, top1=compression, top1_prob=0.968947
+- S02_clean: gshi_pred=0.461986, top1=compression, top1_prob=0.997358
+- S09_clean: gshi_pred=0.474355, top1=compression, top1_prob=0.991294
