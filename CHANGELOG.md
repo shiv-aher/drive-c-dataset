@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.1.1 — 2026-10-24
+
+- Updated the dataset version DOI to the published DRIVE-C Core Version 1.1
+  record, `10.5281/zenodo.23622197`.
+- Synchronized the embedded metadata with the published dataset by correcting
+  S07 from `urban` to `freeway`, revising all scenario notes, and standardizing
+  clean-clip paths.
+- Updated the dataset documentation with the corrected baseline results,
+  source-coverage counts, split guidance, scope, and limitations.
+- Updated the release manifest and integrity checksums.
+
 ## 1.1.0 — 2026-10-17
 
 - Corrected the pixel head to emit logits for binary-cross-entropy with logits.

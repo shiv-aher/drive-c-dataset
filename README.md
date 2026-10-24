@@ -1,20 +1,22 @@
 # DRIVE-C
 
-Corrected Version 3 code release: `v1.1.0` (October 17, 2026). The earlier
-`v1.0.1` tag remains historical provenance for the Version 2 baseline and
-must not be used to reproduce the corrected results reported here.
+Current corrected Version 3 code release: `v1.1.1` (October 24, 2026).
+Version `v1.1.1` synchronizes the public documentation and embedded metadata
+with DRIVE-C Core dataset Version 1.1. Tag `v1.1.0` contains the same corrected
+model and training path but predates this metadata synchronization. The earlier
+`v1.0.1` tag remains historical provenance for the Version 2 baseline.
 
 DRIVE-C is a compact controlled testbed for evaluating degradation awareness,
 configured health-index estimation, and camera-prediction consistency. It contains 10
 original forward-facing scenarios and 600 controlled corrupted variants: 12
 corruption types, five severity levels, and 10 scenarios, plus 10 clean clips.
 
-Dataset version DOI: <https://doi.org/10.5281/zenodo.19656444>  
-Dataset concept DOI: <https://doi.org/10.5281/zenodo.19656443>
+- Dataset version DOI: <https://doi.org/10.5281/zenodo.23622197>
+- Dataset concept DOI: <https://doi.org/10.5281/zenodo.19656443>
 
 ## Reproducibility boundary
 
-This corrected release candidate supports validation and regeneration of corruptions and
+This corrected release supports validation and regeneration of corruptions and
 severity-derived GSHI labels from released anonymized clean material and frozen
 generation inputs. The original unprocessed recordings are not distributed
 because of privacy considerations. Acquisition, source-video clip selection,
@@ -42,7 +44,7 @@ drive-c-dataset/
 The downloaded dataset archive has this structure:
 
 ```text
-drive-c-core-v1/
+drivec_core_v1_1/
   clean_clips/        10 clips, S01_clean.mp4 ... S10_clean.mp4
   corrupted/          600 clips grouped by corruption and severity
   final_metadata.csv  610 rows, 27 fields
@@ -65,7 +67,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
-export DRIVE_C_DATASET_ROOT=/absolute/path/to/drive-c-core-v1
+export DRIVE_C_DATASET_ROOT=/absolute/path/to/drivec_core_v1_1
 ```
 
 All commands below are run from the repository root.

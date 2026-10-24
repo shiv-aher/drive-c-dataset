@@ -1,12 +1,15 @@
-# DRIVE-C Core v1
+# DRIVE-C Core v1.1
 ### A Controlled Corruption Dataset for Autonomous Driving
 
 [![License: CC BY 4.0](https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
-DRIVE-C is a compact controlled video testbed for studying camera-degradation awareness and visual perception robustness in autonomous-driving settings. It pairs 10 real-world forward-facing scenarios with 12 types of synthetic degradation, each applied at 5 severity levels, yielding 600 corrupted variants plus 10 clean clips.
+DRIVE-C is a compact video testbed for controlled camera-corruption studies. It pairs ten short real-world forward-facing driving clips with 12 types of synthetic degradation, each applied at five generator control points. It is intended for paired quality, prediction-consistency, and degradation-aware modeling experiments—not as a large-scale standardized driving benchmark or a calibrated measure of physical sensor health.
 
-Download full dataset from:
-https://doi.org/10.5281/zenodo.19656444
+Zenodo collection DOI for all versions:
+https://doi.org/10.5281/zenodo.19656443
+
+Version 1.1 is the corrected release. Its version-specific DOI is:
+https://doi.org/10.5281/zenodo.23622197
 
 ---
 
@@ -41,7 +44,7 @@ https://doi.org/10.5281/zenodo.19656444
 | S04 | Rural | Cloudy | Day | Moderate |
 | S05 | Parking lot | Sunny | Day | Moderate |
 | S06 | Urban | Cloudy | Night | Moderate |
-| S07 | Urban | Cloudy | Night | Moderate |
+| S07 | Freeway | Cloudy | Night | Moderate |
 | S08 | Urban | Cloudy | Night | None |
 | S09 | Urban | Sunny | Day | Low |
 | S10 | Rural | Cloudy | Day | Moderate |
@@ -59,13 +62,13 @@ Corruptions are organized into three degradation families:
 - `glare_flare` — Specular highlight blooming from direct or reflected light
 
 **Optical**
-- `motion_blur` — Linear kernel blur along the direction of vehicle motion
-- `defocus_blur` — Radially symmetric blur simulating lens focus error
+- `motion_blur` — Seeded trajectory point-spread-function blur
+- `defocus_blur` — Depth-layered Gaussian rendering using a circle-of-confusion proxy
 - `lens_occlusion` — Partial obstruction from water droplets or debris
 - `low_light` — Luminance reduction with amplified sensor noise
 
 **Sensor**
-- `sensor_noise` — Gaussian additive noise at the pixel level
+- `sensor_noise` — Signal-dependent shot-noise and signal-independent read-noise proxies
 - `overexposure` — Global gain increase causing highlight clipping
 - `underexposure` — Global gain reduction causing shadow crushing
 - `jpeg_compression` — Block-artifact compression at decreasing quality factors
@@ -86,7 +89,7 @@ Each corruption is applied at five severity levels using a continuous normalized
 ## Directory Structure
 
 ```
-drive-c-core-v1/
+drivec_core_v1_1/
 ├── clean_clips/
 │   ├── S01_clean.mp4
 │   ├── S02_clean.mp4
@@ -132,7 +135,7 @@ One row per clip. Key fields:
 | `sample_id` | String | Unique clip identifier, e.g. `S01_fog_s3` |
 | `scenario_id` | String | Scenario identifier (S01–S10) |
 | `source_video_id` | String | Source video identifier for traceability |
-| `split` | String | Benchmark split: `dev` or `test` |
+| `split` | String | Convenience partition: `dev` or `test`; not an IID generalization split |
 | `clip_type` | String | `clean` or `corrupted` |
 | `corruption_type` | String | Corruption name, e.g. `fog`, `motion_blur` |
 | `severity_level` | Integer | Integer severity (0 = clean, 1–5 = corrupted) |
@@ -145,8 +148,8 @@ One row per clip. Key fields:
 | `num_frames` | Integer | Number of frames (128 for all clips) |
 | `output_path` | String | Relative path to the MP4 file |
 | `extra_json` | JSON | Per-clip generation parameters for reproducibility |
-| `gshi_gt` | Float | Severity-derived reference GSHI; the column name is retained for schema compatibility |
-| `gshi_pred` | Float | Baseline model (PerceptionHealthNet) predicted GSHI |
+| `gshi_gt` | Float | Severity-derived reference GSHI (historical field name; see below) |
+| `gshi_pred` | Float | PerceptionHealthNet model-estimated GSHI; not generator ground truth |
 | `pred_top1_issue` | String | Highest-probability predicted degradation class |
 | `pred_top1_prob` | Float | Probability of the top predicted class |
 
@@ -158,14 +161,16 @@ Per-scenario fields including source video ID, clip frame range, capture date, n
 
 ## Global Sensor Health Index (GSHI)
 
-The **Global Sensor Health Index (GSHI)** is a scalar index in [0, 1] used for consistent severity-aware comparison under prescribed degradations.
+The **Global Sensor Health Index (GSHI)** is a configured scalar reference in [0, 1] derived from generator severity and declared taxonomy weights. It does not independently measure perceived quality, physical sensor condition, downstream accuracy, or safety.
 
 - **1.0** → clean, unimpaired image
 - **0.0** → severe degradation
 
-Severity-derived reference GSHI is stored under the historical schema field name `gshi_gt`. It is computed deterministically from the applied severity and per-corruption taxonomy weights and decreases monotonically from s1 to s5 for all 12 corruption types. It is not an independently measured indicator of physical sensor health or downstream perception reliability.
+The historical `gshi_gt` field is computed deterministically from the applied severity and per-corruption taxonomy weights. Its decrease from s1 to s5 is guaranteed by construction and verifies implementation ordering only. The five settings are not equal perceptual intervals or physically calibrated quantities.
 
-The `gshi_pred` field contains predictions from **PerceptionHealthNet**, an illustrative baseline model. Overall Pearson r = 0.34 across all 610 clips. The model performs better on underexposure (r = 0.77) and motion blur (r = 0.73), but struggles with sensor noise (r = −0.16), JPEG compression (r = 0.09), and defocus blur (r = 0.12), leaving these as open modeling challenges.
+The `gshi_pred` field contains estimates from **PerceptionHealthNet**, an illustrative baseline. In the corrected evaluation, the clean-clip mean prediction is 0.430, overall Pearson/Spearman association is 0.382/0.376, MAE is 0.299, RMSE is 0.365, and clean-clip MAE is 0.570. Performance remains weak for fog, JPEG compression, defocus blur, and underexposure, and only 61 of 120 scenario-specific five-level sequences are monotonically non-increasing. Users should therefore treat these fields as baseline outputs, not validated health labels.
+
+`corruption_type`, `severity_level`, and `severity_value` are known generator records. In contrast, `pred_presence_json`, `pred_severity_json`, `pred_top1_issue`, `pred_top1_prob`, and `gshi_pred` are model estimates. Do not conflate the two groups.
 
 ---
 
@@ -173,10 +178,12 @@ The `gshi_pred` field contains predictions from **PerceptionHealthNet**, an illu
 
 Clips are partitioned into `dev` and `test` splits of 305 clips each.
 
-- **dev** (S01–S05): includes the freeway and parking-lot scenarios; daytime only
-- **test** (S06–S10): includes all three nighttime scenarios; urban and rural
+- **dev** (S01–S05): includes one freeway and the parking-lot scenario; daytime only
+- **test** (S06–S10): includes all three nighttime scenarios and one nighttime freeway scenario
 
-> **Note:** Split assignment is at the scenario level, not the clip level. The dev and test sets therefore differ in scene type and lighting distribution, not just sample identity.
+> **Note:** Split assignment is at the scenario level, not the clip level. The partitions are convenience groupings and differ in scene type and lighting distribution; all nighttime clips occur in `test`. They must not be interpreted as IID samples from a shared deployment population.
+
+For fitted calibration or model comparison, group exclusively by `scenario_id`: fit on nine complete scenarios, predict the held-out tenth scenario, repeat for all ten folds, and pool only held-out predictions. Never distribute severity variants derived from one scenario across train and test. Report per-scenario results alongside aggregates.
 
 ---
 
@@ -198,7 +205,7 @@ print(df["corruption_type"].value_counts())
 row = df[df["sample_id"] == "S03_motion_blur_s4"].iloc[0]
 clip_path = row["output_path"]   # e.g. corrupted/motion_blur/s4/S03_motion_blur_s4.mp4
 severity  = row["severity_value"]  # 0.55
-gshi      = row["gshi_gt"]         # severity-derived reference GSHI
+gshi      = row["gshi_gt"]         # configured severity-derived reference
 ```
 
 ### Load all clips for one corruption type
@@ -234,10 +241,13 @@ cap.release()
 
 ## Caveats
 
-- **Scene type imbalance:** 6 urban, 2 rural, 1 freeway, 1 parking lot. Urban scenarios are overrepresented.
-- **Nighttime coverage:** All three nighttime scenarios (S06–S08) are urban and cloudy. There are no nighttime rural, freeway, or clear-sky scenarios.
+- **Scene type imbalance:** 5 urban, 2 rural, 2 freeway, and 1 parking-lot scenario. Urban scenarios are overrepresented.
+- **Nighttime coverage:** All three nighttime scenarios (S06–S08) are cloudy. Two are urban and one is freeway. There are no nighttime rural, parking-lot, or clear-sky scenarios.
+- **Independent sample size:** The highest independent unit is the source scenario (`n=10`), not the 600 generated variants. Frames are nested in clips, and severity clips are repeated transformations of a scenario.
+- **Missing source conditions:** Natural rain, snow, fog, dawn/dusk, seasonal variation, other regions, other cameras, and other vehicles are absent. Real-to-synthetic fidelity has not been validated against matched natural degradation.
+- **Task annotations:** Human object, lane, segmentation, depth, and tracking annotations are not supplied. Clean/corrupted prediction consistency is label-free; task accuracy requires compatible annotations from another source.
 - **Single-corruption design:** Each corrupted clip contains exactly one active corruption type. Compound degradations are not included but can be generated using the provided scripts.
-- **Baseline false positives on clean clips:** PerceptionHealthNet assigns low `gshi_pred` to some clean nighttime clips (e.g. S08: 0.149, S07: 0.181). Validate thresholds against the clean clip distribution before using `gshi_pred` for quality filtering.
+- **Baseline false positives on clean clips:** Corrected PerceptionHealthNet assigns low `gshi_pred` to clean nighttime clips (S08: 0.190, S07: 0.198, S06: 0.207). Validate thresholds against the clean distribution before using model predictions for filtering.
 
 ---
 
@@ -247,7 +257,23 @@ The processing pipeline, corruption generator, and baseline model are available 
 
 **https://github.com/shiv-aher/drive-c-dataset**
 
-The public repository supports regeneration of corruption variants and severity-derived reference GSHI from the released anonymized clean clips. Original unprocessed recordings are private and are not required for this public regeneration stage. All per-clip generation parameters are stored in the `extra_json` field of `final_metadata.csv`.
+The repository includes scripts for released clean-frame extraction, corruption generation, GSHI computation, baseline inference, and metadata validation. All per-clip generation parameters are stored in the `extra_json` field of `final_metadata.csv`, enabling any individual clip to be regenerated independently. Original pre-anonymization recordings are not distributed, and the initial anonymization stage is outside the public regeneration boundary.
+
+---
+
+## Version 1.1 corrections
+
+- Replaced the baseline prediction fields in `final_metadata.csv` with outputs
+  from the corrected and retrained PerceptionHealthNet checkpoint.
+- Corrected S07 from `urban` to `freeway` after reviewing the released clip and
+  reconciled all scenario notes with the visible footage.
+- Standardized clean-clip filenames to match the paths recorded in
+  `final_metadata.csv`.
+- Regenerated the baseline scatter figure from the corrected predictions.
+- Revised the GSHI interpretation, intended scope, split guidance, and
+  limitations to match the revised manuscript.
+
+The video frame content and corruption variants are unchanged from Version 1.0.
 
 ---
 
@@ -261,8 +287,8 @@ If you use DRIVE-C in your research, please cite:
   title        = {DRIVE-C: A Controlled Corruption Dataset for Autonomous Driving},
   year         = {2026},
   note         = {Under review at IEEE Data Descriptions},
-  doi          = {10.5281/zenodo.19656444},
-  url          = {https://github.com/shiv-aher/drive-c-dataset}
+  doi          = {10.5281/zenodo.23622197},
+  url          = {https://doi.org/10.5281/zenodo.23622197}
 }
 ```
 

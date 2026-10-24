@@ -1,9 +1,9 @@
 {
-  "release": "DRIVE-C corrected code v1.1.0",
+  "release": "DRIVE-C corrected code v1.1.1",
   "status": "validated-for-release",
-  "code_tag": "v1.1.0",
-  "git_commit": "RESOLVE_FROM_ANNOTATED_TAG_v1.1.0",
-  "dataset_version_doi": "10.5281/zenodo.19656444",
+  "code_tag": "v1.1.1",
+  "git_commit": "RESOLVE_FROM_ANNOTATED_TAG_v1.1.1",
+  "dataset_version_doi": "10.5281/zenodo.23622197",
   "dataset_concept_doi": "10.5281/zenodo.19656443",
   "software_doi": null,
   "checkpoint": {
@@ -12,8 +12,8 @@
   },
   "frozen_files": {
     "configs/taxonomy/camera_issues.yaml": "4a1f8e7fa1c7a2e02220c013316841afec8435414694bc378eee0f01252eb826",
-    "dataset/final_metadata.csv": "ac909eed2513ac37622d80ca44e1c73479ede01735026a62d451eeabd94fdb8a",
-    "dataset/scenario_metadata.csv": "bf31a7e753ee80f3a5fc2eb6943a2c9d175412a087a3178c16a4e3a8e8f9b27d"
+    "dataset/final_metadata.csv": "7ef74e95872d5d2c30d778e95149f8d523ec2d270b97543b5e6be2df4ea16dea",
+    "dataset/scenario_metadata.csv": "68225c0bd70cc6caf7837826391a28c0a77e181f317ea0f5f67dab184ab856fe"
   },
   "environment": {
     "python": "3.10",
@@ -23,5 +23,5 @@
     "numpy": "1.26.4"
   },
   "integrity_manifest": "RELEASE_SHA256SUMS.txt",
-  "notes": "The annotated v1.1.0 tag identifies the exact corrected Version 3 code tree without creating a self-referential tracked manifest. The software DOI may be filled after the archive exists."
+  "notes": "The annotated v1.1.1 tag identifies the corrected Version 3 code tree synchronized with DRIVE-C Core dataset Version 1.1 without creating a self-referential tracked manifest. The software DOI may be filled after the archive exists."
 }

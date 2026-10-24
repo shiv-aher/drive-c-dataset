@@ -3,7 +3,7 @@
 > This document describes the recovered Version 2 baseline retained for
 > provenance. The corrected Version 3 model, checkpoint, training record, and
 > validation instructions are documented in the repository README and the
-> `provenance/` directory for release `v1.1.0`.
+> `provenance/` directory for release `v1.1.1`.
 
 This document records the recovered baseline artifacts and execution settings.
 WP2 will convert these facts into the manuscript description and assess any
